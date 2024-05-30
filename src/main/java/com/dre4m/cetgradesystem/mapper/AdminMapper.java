@@ -7,6 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface AdminMapper {
+    @Select("SELECT * FROM admins WHERE username = #{username}")
+    Admin getAdminByUsername(String username);
 
     @Select("SELECT * FROM admins WHERE id = #{id}")
     Admin getAdminById(Integer id);

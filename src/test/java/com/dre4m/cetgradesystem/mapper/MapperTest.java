@@ -81,6 +81,7 @@ public class MapperTest {
 //        scoreMapper.deleteScore(3);
 //        System.out.println(scoreMapper.getScoreById(3));
 //        System.out.println(scoreMapper.getScoreById(3));
-
+//        System.out.println(adminMapper.getAllAdmins());
+        System.out.println(adminMapper.getAdminByUsername("admin1"));
     }
 }
