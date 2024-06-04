@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body{
+            font-family: Araial sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+
+            background-image: url("./img/CET.png");
+            background-size: cover;
+            background-position-x: 68%;
+        }
+        .container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box{
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+            padding: 20px;
+            width: 300px;
+        }
+        .login-box h2{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-box input[type='text'],
+        .login-box input[type='password']{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .login-box input[type='submit']{
+            width: 100%;
+            background-color: #18e8af;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .login-box input[type="submit"]:hover {
+            background-color: #14d9ab;
+        }
+        .role-selection {
+            margin-bottom: 15px;
+        }
+
+        .role-selection label {
+            margin-right: 15px;
+            font-size: 14px;
+        }
+        .msg {
+            text-align: center;
+            line-height: 64px;
+        }
+        a {
+            text-decoration-line: none;
+            color: #31debb;
+        }
+    </style>
+    <title>Login Page</title>
+</head>
+<body>
+<div class="container">
+    <div class="login-box">
+        <h2>英语四六级成绩查询登录</h2>
+        <form id="loginForm">
+            <input type="text" name="username" placeholder="Username" required />
+            <input type="password" name="password" placeholder="Password" required/>
+            <div class="role-selection">
+                <label>
+                    <input type="radio" name="role" value="student" required> Student
+                </label>
+                <label>
+                    <input type="radio" name="role" value="admin" required> Admin
+                </label>
+            </div>
+            <input type="submit" value="Login">
+            <div class="msg">
+                Don't have account?
+                <a href="./pages/register.html">Sign up</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = Object.fromEntries(formData.entries());
+
+        const url = data.role === 'student' ? '/student/studentLogin' : '/admin/adminLogin';
+
+        axios.post(url, data)
+            .then(response => {
+                if (response.status === 200) {
+                    const user = response.data;
+                    alert("Login success: "+ "用户" + user.username + "登录成功");
+                    sessionStorage.setItem("userInfo", JSON.stringify(user));
+                    sessionStorage.setItem("userType", data.role);
+                    window.location.href = './pages/main.html';
+                } else {
+                    console.error('Unexpected response status:', response.status);
+                    alert('Login failed: Unexpected response status');
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    // 服务器返回了一个状态码，超出了2xx范围
+                    console.error('Error response data:', error.response.data);
+                    console.error('Error response status:', error.response.status);
+                    console.error('Error response headers:', error.response.headers);
+                    alert(`Login failed: ${error.response.data || 'Unknown error'}`);
+                } else if (error.request) {
+                    // 请求已发出，但没有收到响应
+                    console.error('Error request:', error.request);
+                    alert('Login failed: No response received');
+                } else {
+                    // 设置请求时发生了一些问题
+                    console.error('Error message:', error.message);
+                    alert(`Login failed: ${error.message}`);
+                }
+                console.error('Error config:', error.config);
+            });
+    });
+</script>
+</body>
+</html>

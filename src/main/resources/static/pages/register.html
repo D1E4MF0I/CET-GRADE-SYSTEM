@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body{
+            font-family: Araial sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+
+            background-image: url("./img/CET.png");
+            background-size: cover;
+            background-position-x: 68%;
+        }
+        .container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .login-box{
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+            padding: 20px;
+            width: 300px;
+        }
+        .login-box h2{
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .login-box input[type='text'],
+        .login-box input[type='password'],
+        .login-box select{
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+        .login-box select {
+            color: #757575;
+        }
+        .login-box input[type='submit']{
+            width: 100%;
+            background-color: #4185f5;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .login-box input[type="submit"]:hover {
+            background-color: #3068de;
+        }
+    </style>
+    <title>Login Page</title>
+</head>
+<body>
+<div class="container">
+    <div class="login-box">
+        <h2>学生账号注册</h2>
+        <form id="registerForm">
+            <input type="text" name="username" placeholder="账户名称" required />
+            <input type="password" name="password" placeholder="密码" required/>
+            <input type="password" name="password_repeat" placeholder="请重复密码" required/>
+            <input type="text" name="name" placeholder="姓名" required/>
+            <input type="text" name="studentId" placeholder="学号" required />
+            <input type="text" name="major" placeholder="专业" required />
+<!--            <input type="text" name="grade" placeholder="年级" required />-->
+            <select name="grade" id="grade" onchange="removePlaceholder()">
+                <option disabled selected style="display:none;">请选择年级</option>
+            </select>
+            <input type="submit" value="注册">
+        </form>
+    </div>
+</div>
+<script>
+    function removePlaceholder() {
+        var selectElement = document.getElementById("grade");
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        if (selectedOption.value !== "") {
+            selectElement.style.color = "black"; // 修改字体颜色
+            selectedOption.style.display = "none"; // 隐藏当前选项
+        }
+    }
+
+    function checkPassword() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+        if (password !== confirmPassword) {
+            alert("两次输入的密码不一致，请重新输入");
+            return false; // 阻止表单提交
+        }
+        return true; // 允许表单提交
+    }
+
+    function generateYears() {
+        const select = document.getElementById('grade');
+        const currentYear = new Date().getFullYear();
+        for (let i = 0; i < 5; i++) {
+            const year = currentYear - i;
+            const option = document.createElement('option');
+            option.value = year;
+            option.text = year;
+            select.add(option);
+        }
+    }
+
+    window.onload = generateYears();
+
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const form = e.target;
+        const data = {
+            username: form.username.value,
+            password: form.password.value,
+            password_repeat: form.password_repeat.value,
+            name: form.name.value,
+            studentId: form.studentId.value,
+            major: form.major.value,
+            grade: form.grade.value
+        };
+        if(data.password !== data.password_repeat){
+            alert("两次输入的密码不一致，请重新输入");
+            return;
+        }
+
+        axios.post('/student/studentRegister', data)
+            .then(response => {
+                console.log(response.data)
+                alert(response.data);
+                window.location.href = '../index.html';
+            })
+            .catch(error => {
+                console.error('There was an error registering the student:', error.response.data);
+                alert(error.response.data);
+            });
+    });
+</script>
+</body>
+</html>
