@@ -21,7 +21,7 @@ public interface ScoreMapper {
     @Select("SELECT * FROM scores WHERE studentId = #{studentId}")
     @Result(property = "student", javaType = Student.class, column = "studentId",
             one = @One(select = "com.dre4m.cetgradesystem.mapper.StudentMapper.getStudentById"))
-    Score getScoresByStudentId(Integer studentId);
+    List<Score> getScoresByStudentId(Integer studentId);
 
     @Insert("INSERT INTO scores(studentId, cet4Score, cet6Score, examDate) VALUES(#{student.id}, #{cet4Score}, #{cet6Score}, #{examDate})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
