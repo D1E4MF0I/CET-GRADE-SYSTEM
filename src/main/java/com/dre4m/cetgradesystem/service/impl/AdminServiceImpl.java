@@ -20,8 +20,7 @@ public class AdminServiceImpl implements AdminService {
         if (admin != null && admin.getPassword().equals(password)) {
             return admin;
         } else {
-            // TODO:抛出登陆错误
-            return new Admin();
+            return null;
         }
     }
 
