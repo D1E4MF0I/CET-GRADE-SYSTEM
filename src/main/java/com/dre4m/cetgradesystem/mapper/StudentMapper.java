@@ -10,6 +10,12 @@ public interface StudentMapper {
     @Select("SELECT * FROM students WHERE id = #{id}")
     Student getStudentById(Integer id);
 
+    @Select("SELECT * FROM students WHERE username = #{username}")
+    Student getStudentByUsername(String username);
+
+    @Select("SELECT * FROM students WHERE studentId = #{studentId}")
+    Student getStudentByStudentId(String studentId);
+
     @Select("SELECT * FROM students")
     List<Student> getAllStudents();
 
