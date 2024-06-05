@@ -1,17 +1,23 @@
 package com.dre4m.cetgradesystem.service.impl;
 
 import com.dre4m.cetgradesystem.domain.Student;
+import com.dre4m.cetgradesystem.mapper.ScoreMapper;
 import com.dre4m.cetgradesystem.mapper.StudentMapper;
+import com.dre4m.cetgradesystem.service.ScoreService;
 import com.dre4m.cetgradesystem.service.StudentService;
+import com.dre4m.cetgradesystem.service.model.StudentWithScores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentServiceImpl implements StudentService {
     @Autowired
     private StudentMapper studentMapper;
+    @Autowired
+    private ScoreMapper scoreMapper;
 
     @Override
     public Student register(Student student) {
@@ -46,13 +52,25 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public List<Student> getAllStudentsInfo() {
-        return studentMapper.getAllStudents();
+    public List<StudentWithScores> getAllStudentsInfo() {
+        return studentMapper.getAllStudents().stream()
+                .map(this::mapToStudentWithScores)
+                .collect(Collectors.toList());
+    }
+
+    private StudentWithScores mapToStudentWithScores(Student student) {
+        Integer maxCet4Score = scoreMapper.findMaxCet4ScoreByStudentId(student.getId());
+        Integer maxCet6Score = scoreMapper.findMaxCet6ScoreByStudentId(student.getId());
+        return new StudentWithScores(student, maxCet4Score, maxCet6Score);
     }
 
     @Override
-    public Student getStudentById(Integer id) {
-        return studentMapper.getStudentById(id);
+    public StudentWithScores getStudentById(Integer id) {
+        Student student = studentMapper.getStudentById(id);
+        if (student != null) {
+            return mapToStudentWithScores(student);
+        }
+        return null;
     }
 
     @Override

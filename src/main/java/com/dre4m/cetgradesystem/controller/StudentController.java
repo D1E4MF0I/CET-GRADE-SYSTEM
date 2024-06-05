@@ -5,6 +5,7 @@ import com.dre4m.cetgradesystem.domain.Admin;
 import com.dre4m.cetgradesystem.domain.Student;
 import com.dre4m.cetgradesystem.error.ErrorResponse;
 import com.dre4m.cetgradesystem.service.StudentService;
+import com.dre4m.cetgradesystem.service.model.StudentWithScores;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -49,19 +50,20 @@ public class StudentController {
 
     @GetMapping("/allStudentsInfo")
     public ResponseEntity<?> allStudentsInfo() {
-        List<Student> students = studentService.getAllStudentsInfo();
-        return ResponseEntity.ok(students);
+        List<StudentWithScores> studentWithScores = studentService.getAllStudentsInfo();
+        return ResponseEntity.ok(studentWithScores);
     }
 
     @GetMapping("/getStudentInfo/{studentId}")
     public ResponseEntity<?> getStudentInfo(@PathVariable Integer studentId){
-        Student student = studentService.getStudentById(studentId);
+        StudentWithScores student = studentService.getStudentById(studentId);
         if(student != null){
             return ResponseEntity.ok(student);
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorResponse(404, "Student Not Found"));
         }
     }
+
     @DeleteMapping("/deleteStudent/{studentId}")
     public ResponseEntity<?> deleteStudent(@PathVariable Integer studentId){
         boolean isDeleted = studentService.deleteStudentById(studentId);

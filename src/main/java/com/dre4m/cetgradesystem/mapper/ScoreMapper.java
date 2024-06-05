@@ -9,27 +9,27 @@ import java.util.List;
 public interface ScoreMapper {
 
     @Select("SELECT * FROM scores WHERE id = #{id}")
-    @Result(property = "student", javaType = Student.class, column = "studentId",
-            one = @One(select = "com.dre4m.cetgradesystem.mapper.StudentMapper.getStudentById"))
     Score getScoreById(Integer id);
 
     @Select("SELECT * FROM scores")
-    @Result(property = "student", javaType = Student.class, column = "studentId",
-            one = @One(select = "com.dre4m.cetgradesystem.mapper.StudentMapper.getStudentById"))
     List<Score> getAllScores();
 
     @Select("SELECT * FROM scores WHERE studentId = #{studentId}")
-    @Result(property = "student", javaType = Student.class, column = "studentId",
-            one = @One(select = "com.dre4m.cetgradesystem.mapper.StudentMapper.getStudentById"))
     List<Score> getScoresByStudentId(Integer studentId);
 
-    @Insert("INSERT INTO scores(studentId, cet4Score, cet6Score, examDate) VALUES(#{student.id}, #{cet4Score}, #{cet6Score}, #{examDate})")
+    @Insert("INSERT INTO scores(studentId, cet4Score, cet6Score, examDate) VALUES(#{studentId}, #{cet4Score}, #{cet6Score}, #{examDate})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertScore(Score score);
 
-    @Update("UPDATE scores SET studentId = #{student.id}, cet4Score = #{cet4Score}, cet6Score = #{cet6Score}, examDate = #{examDate} WHERE id = #{id}")
+    @Update("UPDATE scores SET studentId = #{studentId}, cet4Score = #{cet4Score}, cet6Score = #{cet6Score}, examDate = #{examDate} WHERE id = #{id}")
     void updateScore(Score score);
 
     @Delete("DELETE FROM scores WHERE id = #{id}")
     void deleteScore(Integer id);
+
+    @Select("SELECT MAX(cet4Score) FROM scores WHERE studentId = #{studentId}")
+    Integer findMaxCet4ScoreByStudentId(Integer studentId);
+
+    @Select("SELECT MAX(cet6Score) FROM scores WHERE studentId = #{studentId}")
+    Integer findMaxCet6ScoreByStudentId(Integer studentId);
 }
