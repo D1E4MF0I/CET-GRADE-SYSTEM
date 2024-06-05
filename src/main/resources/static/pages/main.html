@@ -102,20 +102,60 @@
         #studentForm input[type="text"] {
             width: 200px;
         }
+        .student-list {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .student-list th, .student-list td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        .student-list th {
+            background-color: #f2f2f2;
+        }
+        .edit-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-button:hover {
+            background-color: #45a049;
+        }
+
     </style>
 </head>
 <body>
 <div class="sidebar">
     <h3 style="text-align: center;">四六级成绩管理系统</h3>
     <a href="#content_box1" >主页</a>
-    <a href="#content_box2" >学生信息管理</a>
+    <a href="#content_box2" >个人信息管理</a>
     <a href="#content_box3" >成绩管理</a>
     <a href="#content_box4" >统计与分析</a>
     <a href="#content_box5" >通知公告</a>
+    <a href="#content_box5" >通知公告</a>
+    <a href="#content_box7" >学生信息列表</a>
 </div>
 <div class="content" id="content">
+
+    <div class="content_box" id="content_box1">
+        <h1 style="margin-bottom: 10vh">欢迎使用四六级成绩管理系统</h1>
+        <div>
+            <a href="#content_box6">登记成绩</a>
+            <a href="#content_box3">成绩管理</a>
+            <a href="#content_box2">修改信息</a>
+            <a href="#content_box5">系统公告</a>
+        </div>
+    </div>
     <div class="content_box" id="content_box2">
-        <h2 style="margin:2vh 0vh;">学生信息管理</h2>
+        <h2 style="margin:2vh 0vh;">个人信息管理</h2>
         <form id="studentForm">
             <div class="form-group">
                 <label for="id">学生ID</label>
@@ -141,20 +181,29 @@
             <button type="button" onclick="saveData()">保存</button>
         </form>
     </div>
-
-    <div class="content_box" id="content_box1">
-        <h1 style="margin-bottom: 10vh">欢迎使用四六级成绩管理系统</h1>
-        <div>
-            <a href="#content_box6">登记成绩</a>
-            <a href="#content_box3">成绩管理</a>
-            <a href="#content_box2">修改信息</a>
-            <a href="#content_box5">系统公告</a>
-        </div>
-    </div>
     <div class="content_box" id="content_box3">成绩管理</div>
     <div class="content_box" id="content_box4">统计与分析</div>
     <div class="content_box" id="content_box5">通知公告</div>
     <div class="content_box" id="content_box6">登记成绩</div>
+    <!-- 新增的学生列表内容 -->
+    <div class="content_box" id="content_box7">
+        <h2 style="margin:2vh 0vh;">学生信息列表</h2>
+        <table class="student-list" id="studentList">
+            <thead>
+            <tr>
+                <th>学生ID</th>
+                <th>姓名</th>
+                <th>学号</th>
+                <th>专业</th>
+                <th>年级</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 学生信息将动态插入到这里 -->
+            </tbody>
+        </table>
+    </div>
 </div>
 <script>
     let userInfo = null;
@@ -178,15 +227,89 @@
         }
     });
 
+    function deleteStudent(studentId) {
+        // 提示用户确认删除操作
+        if (confirm("确定要删除该学生信息吗？")) {
+            axios.delete(`/student/deleteStudent/${studentId}`)
+                .then(response => {
+                    if (response.status === 200) {
+                        alert("学生信息已删除");
+                        fetchStudents(); // 删除成功后刷新学生列表
+                    } else {
+                        console.error('Unexpected response status:', response.status);
+                        alert('删除失败: Unexpected response status');
+                    }
+                })
+                .catch(error => {
+                    if (error.response) {
+                        console.error('Error response data:', error.response.data);
+                        alert(`删除失败: ${error.response.data.message || 'Unknown error'}`);
+                    } else if (error.request) {
+                        console.error('Error request:', error.request);
+                        alert('删除失败: No response received');
+                    } else {
+                        console.error('Error message:', error.message);
+                        alert(`删除失败: ${error.message}`);
+                    }
+                    console.error('Error config:', error.config);
+                });
+        }
+    }
+
+
+    function editStudent(studentId) {
+        axios.get(`/student/getStudentInfo/${studentId}`)
+            .then(response => {
+                const student = response.data;
+                document.getElementById('id').value = student.id;
+                document.getElementById('name').value = student.name;
+                document.getElementById('studentId').value = student.studentId;
+                document.getElementById('major').value = student.major;
+                document.getElementById('grade').value = student.grade;
+            })
+            .catch(error => {
+                console.error('Error fetching student:', error);
+                alert('无法获取学生信息，请稍后再试');
+            });
+    }
+
+
     // 学生信息管理
     function enableEditing() {
         const inputs = document.querySelectorAll('#studentForm input');
         inputs.forEach(input => {
-            if (input.id !== 'id' && input.id !== 'grade') {
+            if (input.id !== 'id') {
                 input.removeAttribute('disabled');
             }
         });
     }
+
+    function fetchStudents() {
+        axios.get('/student/allStudentsInfo')
+            .then(response => {
+                const students = response.data;
+                const studentList = document.getElementById('studentList').getElementsByTagName('tbody')[0];
+                studentList.innerHTML = '';
+                students.forEach(student => {
+                    const row = studentList.insertRow();
+                    row.innerHTML = `
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${student.studentId}</td>
+                        <td>${student.major}</td>
+                        <td>${student.grade}</td>
+                        <td style="display: flex;justify-content: space-around;">
+                            <a href="#content_box2" class="edit-button" onclick="editStudent(${student.id})">编辑</a>
+                            <a href="#" class="edit-button" onclick="deleteStudent(${student.id})">删除</a>
+                        </td>
+                    `;
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching students:', error);
+            });
+    }
+
 
     // 学生信息管理
     function saveData() {
@@ -215,7 +338,7 @@
                     const savedData = response.data;
                     alert("保存成功: " + JSON.stringify(savedData));
                     // 在这里处理后端返回的数据，比如显示成功信息或者更新页面显示
-                    sessionStorage.setItem('userInfo', savedData);
+                    sessionStorage.setItem('userInfo', JSON.stringify(savedData));
                 } else {
                     console.error('Unexpected response status:', response.status);
                     alert('保存失败: Unexpected response status');
@@ -245,6 +368,10 @@
                     alert(`保存失败: ${error.message}`);
                 }
                 console.error('Error config:', error.config);
+            })
+            .finally(()=>{
+                console.log("已经成功fetchStudents，正在进行信息填充")
+                fetchStudents();
             });
     }
 
@@ -255,6 +382,7 @@
         inputs.forEach(input => {
             input.setAttribute('disabled', 'true');
         });
+        fetchStudents();
     };
 </script>
 </body>

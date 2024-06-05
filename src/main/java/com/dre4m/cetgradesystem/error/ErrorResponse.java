@@ -8,6 +8,10 @@ public class ErrorResponse {
     private int code;
     private String jsonData;
 
+    public ErrorResponse(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
     public ErrorResponse(int code, String msg, String jsonData) {
         this.code = code;
         this.msg = msg;

@@ -11,5 +11,10 @@ public interface StudentService {
     Student register(Student student);
     Student login(String username, String password);
     Student saveInfo(Student student);
+    List<Student> getAllStudentsInfo();
+
+    Student getStudentById(Integer id);
+
+    boolean deleteStudentById(Integer studentId);
 }
 

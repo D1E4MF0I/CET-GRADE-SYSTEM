@@ -40,5 +40,5 @@ public interface StudentMapper {
     void updateStudentById(Student student);
 
     @Delete("DELETE FROM students WHERE id = #{id}")
-    void deleteStudent(Integer id);
+    boolean deleteStudent(Integer id);
 }

@@ -6,6 +6,8 @@ import com.dre4m.cetgradesystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class StudentServiceImpl implements StudentService {
     @Autowired
@@ -41,6 +43,21 @@ public class StudentServiceImpl implements StudentService {
         studentMapper.updateStudentById(student);
         student = studentMapper.getStudentById(student.getId());
         return student;
+    }
+
+    @Override
+    public List<Student> getAllStudentsInfo() {
+        return studentMapper.getAllStudents();
+    }
+
+    @Override
+    public Student getStudentById(Integer id) {
+        return studentMapper.getStudentById(id);
+    }
+
+    @Override
+    public boolean deleteStudentById(Integer studentId) {
+        return studentMapper.deleteStudent(studentId);
     }
 
     public boolean isExistByUsername(String username) {
