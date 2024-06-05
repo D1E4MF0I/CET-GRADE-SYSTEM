@@ -1,0 +1,117 @@
+/* 容器类，使用Flexbox进行排列 */
+.btn-container {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-wrap: nowrap; /* 自动换行 */
+    justify-content: space-around; /* 居中对齐 */
+    align-items: center; /* 垂直居中对齐 */
+    padding: 20px; /* 上方外边距 */
+}
+
+/* 按钮的基础样式 */
+.btn {
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-family: 'Arial', sans-serif;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn:active {
+    transform: translateY(2px);
+}
+
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.2);
+}
+
+/* 不同颜色的按钮样式 */
+
+/* 莫兰迪紫 */
+.btn-purple {
+    background-color: #B0A8B9;
+}
+.btn-purple:hover {
+    background-color: #A89BB1;
+}
+.btn-purple:active {
+    background-color: #998AA3;
+}
+
+/* 莫兰迪蓝 */
+.btn-blue {
+    background-color: #A5B9C8;
+}
+.btn-blue:hover {
+    background-color: #95A8B5;
+}
+.btn-blue:active {
+    background-color: #8496A3;
+}
+
+/* 莫兰迪绿 */
+.btn-green {
+    background-color: #A8C5A8;
+}
+.btn-green:hover {
+    background-color: #98B598;
+}
+.btn-green:active {
+    background-color: #88A588;
+}
+
+/* 莫兰迪灰 */
+.btn-gray {
+    background-color: #C4C4C4;
+}
+.btn-gray:hover {
+    background-color: #B4B4B4;
+}
+.btn-gray:active {
+    background-color: #A4A4A4;
+}
+
+/* 莫兰迪黄 */
+.btn-yellow {
+    background-color: #D9C8A9;
+}
+.btn-yellow:hover {
+    background-color: #C9B89A;
+}
+.btn-yellow:active {
+    background-color: #B9A889;
+}
+
+/* 编辑按钮 */
+.btn-edit {
+    background-color: #4CAF50; /* 绿色 */
+}
+.btn-edit:hover {
+    background-color: #45A049;
+}
+.btn-edit:active {
+    background-color: #3E8E41;
+}
+
+/* 删除按钮 */
+.btn-delete {
+    background-color: #F44336; /* 红色 */
+}
+.btn-delete:hover {
+    background-color: #E53935;
+}
+.btn-delete:active {
+    background-color: #D32F2F;
+}

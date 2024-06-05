@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>四六级成绩管理系统</title>
+    <link rel="stylesheet" href="../css/button.css" />
     <style>
         *{
             margin: 0;
@@ -18,6 +19,7 @@
             align-items: center;
 
             font-family: Arial, sans-serif;
+            font-size: large;
         }
         .sidebar {
             width: 15vw;
@@ -60,34 +62,25 @@
             justify-content: center;
             align-items: center;
         }
-        #content_box1 div{
-            width: 80%;
-
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-        #content_box1 div a{
-            width: 20%;
-
-            text-align: center;
-            text-decoration-line: none;
-            font-size: x-large;
-
-            color: #2c3e50;
-            border: 1px solid black;
-            box-sizing: border-box;
-        }
-        #content_box1 div a:hover{
-            color: #00d0ff;
-        }
 
         #content_box2{
             width: 100%;
-
+        }
+        .content-box-template-center{
             display: flex;
 
             flex-direction: column;
+
+            justify-content: center;
+            align-items: center;
+        }
+        .content-box-template-top{
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: start;
         }
         #studentForm .form-group {
             margin-bottom: 30px;
@@ -113,44 +106,44 @@
         .student-list th {
             background-color: #f2f2f2;
         }
-        .edit-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            text-decoration: none;
+
+        #scoreForm .form-group {
+            margin-bottom: 30px;
+            display: flex;
+
+            font-size: large;
+        }
+        #scoreForm label {
             display: inline-block;
+            width: 100px;
+        }
+        #scoreForm input[type="text"],
+        #scoreForm input[type="number"],
+        #scoreForm select{
+            width: 200px;
+            box-sizing: border-box;
+        }
+        #scoreForm select{
             text-align: center;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
         }
 
-        .edit-button:hover {
-            background-color: #45a049;
+        /* 成绩管理 */
+        /* 表格样式 */
+        .score-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
-        /* 排序按钮样式 */
-        .sort-buttons {
-            margin-bottom: 20px;
+        .score-list th, .score-list td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
         }
 
-        .sort-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            border-radius: 4px;
-            transition: background-color 0.3s ease;
+        .score-list th {
+            background-color: #f2f2f2;
         }
-
-        .sort-button:hover {
-            background-color: #45a049;
-        }
-
     </style>
 </head>
 <body>
@@ -165,18 +158,19 @@
     <a href="#content_box7" >学生信息列表</a>
 </div>
 <div class="content" id="content">
-
-    <div class="content_box" id="content_box1">
+    <!--欢迎使用四六级成绩管理系统-->
+    <div class="content_box content-box-template-center" id="content_box1">
         <h1 style="margin-bottom: 10vh">欢迎使用四六级成绩管理系统</h1>
-        <div>
-            <a href="#content_box6">登记成绩</a>
-            <a href="#content_box3">成绩管理</a>
-            <a href="#content_box2">修改信息</a>
-            <a href="#content_box5">系统公告</a>
+        <div class="btn-container">
+            <a href="#content_box6" class="btn btn-green">登记成绩</a>
+            <a href="#content_box3" class="btn btn-green">成绩管理</a>
+            <a href="#content_box2" class="btn btn-green">修改信息</a>
+            <a href="#content_box5" class="btn btn-green">系统公告</a>
         </div>
     </div>
-    <div class="content_box" id="content_box2">
-        <h2 style="margin:2vh 0vh;">个人信息管理</h2>
+    <!--个人信息管理-->
+    <div class="content_box content-box-template-center" id="content_box2">
+        <h2 style="margin:5vh 0vh;">个人信息管理</h2>
         <form id="studentForm">
             <div class="form-group">
                 <label for="id">学生ID</label>
@@ -198,22 +192,62 @@
                 <label for="grade">年级</label>
                 <input type="text" id="grade" name="grade">
             </div>
-            <button type="button" onclick="enableEditing()">修改</button>
-            <button type="button" onclick="saveData()">保存</button>
+            <div class="btn-container">
+                <button class="btn btn-blue" type="button" onclick="enableEditing()">修改</button>
+                <button class="btn btn-blue" type="button" onclick="saveData()">保存</button>
+            </div>
         </form>
     </div>
-    <div class="content_box" id="content_box3">成绩管理</div>
-    <div class="content_box" id="content_box4">统计与分析</div>
-    <div class="content_box" id="content_box5">通知公告</div>
-    <div class="content_box" id="content_box6">
-        <h2>成绩登记</h2>
+    <!--成绩管理-->
+    <div class="content_box" id="content_box3">
+        <h2 style="margin:5vh 0vh;">成绩管理</h2>
+        <table class="score-list" id="scoreList">
+            <thead>
+            <tr>
+                <th>考试日期</th>
+                <th>CET4成绩</th>
+                <th>CET6成绩</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 成绩信息将动态插入到这里 -->
+            </tbody>
+        </table>
     </div>
-    <div class="content_box" id="content_box7">
+<!--    <div class="content_box" id="content_box4">统计与分析</div>-->
+<!--    <div class="content_box" id="content_box5">通知公告</div>-->
+    <!--成绩登记-->
+    <div class="content_box content-box-template-center" id="content_box6">
+        <h2 style="margin:5vh 0vh;">成绩登记</h2>
+        <form id="scoreForm">
+            <div class="form-group">
+                <label for="scoreCet4Score">CET4成绩</label>
+                <input type="number" id="scoreCet4Score" name="cet4Score" min="0" max="710">
+            </div>
+            <div class="form-group">
+                <label for="scoreCet6Score">CET6成绩</label>
+                <input type="number" id="scoreCet6Score" name="cet6Score" min="0" max="710">
+            </div>
+            <div class="form-group">
+                <label for="scoreExamDate">考试时间</label>
+                <select id="scoreExamDate" name="examDate" required>
+                    <!-- 动态生成选项 -->
+                </select>
+            </div>
+            <div class="btn-container">
+                <button class="btn btn-gray" type="button" id="toggleButton" onclick="toggleScoreType()">切换为CET6成绩</button>
+                <button class="btn btn-gray" type="button" onclick="submitScore()">提交</button>
+            </div>
+        </form>
+    </div>
+    <!--学生信息列表-->
+    <div class="content_box content-box-template-top" id="content_box7">
         <h2 style="margin:2vh 0vh;">学生信息列表</h2>
-        <div class="sort-buttons">
-            <button class="sort-button" onclick="fetchStudents('id')">按ID排序</button>
-            <button class="sort-button" onclick="fetchStudents('cet4')">按CET4排序</button>
-            <button class="sort-button" onclick="fetchStudents('cet6')">按CET6排序</button>
+        <div class="btn-container">
+            <button class="btn btn-yellow" onclick="fetchStudents('id')">按ID排序</button>
+            <button class="btn btn-purple" onclick="fetchStudents('cet4')">按CET4排序</button>
+            <button class="btn btn-blue" onclick="fetchStudents('cet6')">按CET6排序</button>
         </div>
         <table class="student-list" id="studentList">
             <thead>
@@ -236,25 +270,212 @@
 </div>
 <script>
     let userInfo = null;
-    let userType = null;
+    let userRole = null;
 
     document.addEventListener('DOMContentLoaded', (event) => {
-        userType = sessionStorage.getItem('userType');
+        // 成绩登记
+        generateExamDates();
+        toggleScoreType();
+
+        // 学生信息管理
+        // 设置信息无法保存 Initially disable all inputs
+        const inputs = document.querySelectorAll('#studentForm input');
+        inputs.forEach(input => {
+            input.setAttribute('disabled', 'true');
+        });
+
+        // 成绩管理
+        fetchScores();
+        fetchStudents();
+
+        userRole = sessionStorage.getItem('userRole');
         userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
-        // TODO:如果是学生身份
-        if(userType === 'student'){
+
+        const allRoleElements = document.querySelectorAll('[class*="role-"]');
+
+        allRoleElements.forEach(element => {
+            // 保存原始的 display 属性
+            element.setAttribute('data-display', window.getComputedStyle(element).display);
+            element.style.display = 'none'; // 默认隐藏所有带有角色类的元素
+        });
+
+        if (userRole === 'admin') {
+            // 显示管理员专用元素
+            const adminElements = document.querySelectorAll('.role-admin');
+            adminElements.forEach(element => {
+                element.style.display = element.getAttribute('data-display');
+            });
+        } else if (userRole === 'student') {
             const student = userInfo;
             document.getElementById('id').value = student.id;
             document.getElementById('name').value = student.name;
             document.getElementById('studentId').value = student.studentId;
             document.getElementById('major').value = student.major;
             document.getElementById('grade').value = student.grade;
-        }else{
-            // TODO:如果是管理员身份
-            const admin = userInfo;
-
+            // 显示学生专用元素
+            const studentElements = document.querySelectorAll('.role-student');
+            studentElements.forEach(element => {
+                element.style.display = element.getAttribute('data-display');
+            });
         }
     });
+
+    function generateExamDates() {
+        const examDateSelect = document.getElementById('scoreExamDate');
+        const currentDate = new Date();
+        let month = currentDate.getMonth() + 1; // getMonth() returns 0-11, so we add 1
+        let year = currentDate.getFullYear();
+
+        const examDates = [];
+        // 计算最近的时间节点
+        while (examDates.length < 6) {
+            if (month >= 6) {
+                if (month >= 12) {
+                    examDates.push(`${year}-12`);
+                    month = 6;
+                    year--;
+                } else {
+                    examDates.push(`${year}-06`);
+                    month = 12;
+                }
+            } else {
+                month = 12;
+                year--;
+            }
+        }
+
+        // 将生成的时间节点添加到下拉菜单中
+        examDates.forEach(date => {
+            const option = document.createElement('option');
+            option.value = date;
+            option.text = `${date.slice(0, 4)}年${date.slice(5)}月`;
+            examDateSelect.appendChild(option);
+        });
+    }
+
+    function toggleScoreType() {
+        const cet4Input = document.getElementById('scoreCet4Score');
+        const cet6Input = document.getElementById('scoreCet6Score');
+        const toggleButton = document.getElementById('toggleButton');
+        const cet4Label = document.getElementById('cet4Label');
+        const cet6Label = document.getElementById('cet6Label');
+
+        if (cet4Input.parentElement.style.display === 'none') {
+            cet4Input.parentElement.style.display = 'block';
+            cet6Input.parentElement.style.display = 'none';
+            toggleButton.textContent = '切换为CET6成绩';
+        } else {
+            cet4Input.parentElement.style.display = 'none';
+            cet6Input.parentElement.style.display = 'block';
+            toggleButton.textContent = '切换为CET4成绩';
+        }
+    }
+
+    function submitScore() {
+        const form = document.getElementById('scoreForm');
+        const selectedDate = form.scoreExamDate.value;
+        const examDate = new Date(`${selectedDate}-01`);
+        const studentId = JSON.parse(sessionStorage.getItem('userInfo')).id;
+
+        let cet4Score = form.scoreCet4Score.value ? parseInt(form.scoreCet4Score.value) : null;
+        let cet6Score = form.scoreCet6Score.value ? parseInt(form.scoreCet6Score.value) : null;
+
+        // 验证并调整CET4成绩
+        if (cet4Score !== null) {
+            if (cet4Score > 710) {
+                cet4Score = 710;
+            } else if (cet4Score < 0) {
+                cet4Score = 0;
+            }
+        }
+
+        // 验证并调整CET6成绩
+        if (cet6Score !== null) {
+            if (cet6Score > 710) {
+                cet6Score = 710;
+            } else if (cet6Score < 0) {
+                cet6Score = 0;
+            }
+        }
+
+        const data = {
+            studentId: JSON.parse(sessionStorage.getItem('userInfo')).id,
+            cet4Score: cet4Score,
+            cet6Score: cet6Score,
+            examDate: examDate.toISOString().split('T')[0] // 转换为ISO格式的日期字符串
+        };
+
+        axios.post('/score/submitScore', data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    alert("成绩登记成功");
+                    form.reset(); // 清空表单
+                } else {
+                    console.error('Unexpected response status:', response.status);
+                    alert('成绩登记失败: Unexpected response status');
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    console.error('Error response data:', error.response.data);
+                    alert(`成绩登记失败: ${error.response.data.message || 'Unknown error'}`);
+                } else if (error.request) {
+                    console.error('Error request:', error.request);
+                    alert('成绩登记失败: No response received');
+                } else {
+                    console.error('Error message:', error.message);
+                    alert(`成绩登记失败: ${error.message}`);
+                }
+                console.error('Error config:', error.config);
+            })
+            .finally(() =>{
+                fetchScores();
+                fetchStudents();
+            });
+    }
+
+
+    function fetchScores() {
+        const studentId = JSON.parse(sessionStorage.getItem('userInfo')).id;
+        axios.get(`/score/student/${studentId}`)
+            .then(response => {
+                const scores = response.data;
+                const scoreList = document.getElementById('scoreList').getElementsByTagName('tbody')[0];
+                scoreList.innerHTML = ''; // 清空表格内容
+                scores.forEach(score => {
+                    const row = scoreList.insertRow();
+                    row.innerHTML = `
+                    <td>${score.examDate}</td>
+                    <td>${score.cet4Score || 'N/A'}</td>
+                    <td>${score.cet6Score || 'N/A'}</td>
+                    <td class="btn-container">
+                        <button class="btn btn-delete" onclick="deleteScore(${score.id})">删除</button>
+                    </td>
+                `;
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching scores:', error);
+            });
+    }
+    function deleteScore(scoreId) {
+        if (confirm('确定要删除这个成绩吗？')) {
+            axios.delete(`/score/${scoreId}`)
+                .then(response => {
+                    alert('成绩删除成功');
+                    fetchScores(); // 重新获取成绩信息，刷新表格
+                    fetchStudents();
+                })
+                .catch(error => {
+                    console.error('Error deleting score:', error);
+                    alert('删除成绩失败');
+                });
+        }
+    }
 
     function deleteStudent(studentId) {
         // 提示用户确认删除操作
@@ -263,7 +484,8 @@
                 .then(response => {
                     if (response.status === 200) {
                         alert("学生信息已删除");
-                        fetchStudents(); // 删除成功后刷新学生列表
+                        fetchStudents();
+                        fetchScores();
                     } else {
                         console.error('Unexpected response status:', response.status);
                         alert('删除失败: Unexpected response status');
@@ -344,8 +566,8 @@
                         <td>${studentWithScores.maxCet4Score || 'N/A'}</td>
                         <td>${studentWithScores.maxCet6Score || 'N/A'}</td>
                         <td style="display: flex;justify-content: space-around;">
-                            <a href="#content_box2" class="edit-button" onclick="editStudent(${student.id})">编辑</a>
-                            <a href="#" class="edit-button" onclick="deleteStudent(${student.id})">删除</a>
+                            <a href="#content_box2" class="btn btn-edit" onclick="editStudent(${student.id})">编辑</a>
+                            <a href="#" class="btn btn-delete" onclick="deleteStudent(${student.id})">删除</a>
                         </td>
                     `;
                 });
@@ -417,20 +639,10 @@
                 console.error('Error config:', error.config);
             })
             .finally(()=>{
-                console.log("已经成功fetchStudents，正在进行信息填充")
+                fetchScores();
                 fetchStudents();
             });
     }
-
-    window.onload = () => {
-        // 学生信息管理
-        // 设置信息无法保存 Initially disable all inputs
-        const inputs = document.querySelectorAll('#studentForm input');
-        inputs.forEach(input => {
-            input.setAttribute('disabled', 'true');
-        });
-        fetchStudents();
-    };
 </script>
 </body>
 </html>

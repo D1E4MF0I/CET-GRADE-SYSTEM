@@ -4,6 +4,7 @@ import com.dre4m.cetgradesystem.domain.Score;
 import com.dre4m.cetgradesystem.domain.Student;
 import org.apache.ibatis.annotations.*;
 
+import java.sql.Date;
 import java.util.List;
 @Mapper
 public interface ScoreMapper {
@@ -19,13 +20,16 @@ public interface ScoreMapper {
 
     @Insert("INSERT INTO scores(studentId, cet4Score, cet6Score, examDate) VALUES(#{studentId}, #{cet4Score}, #{cet6Score}, #{examDate})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    void insertScore(Score score);
+    boolean insertScore(Score score);
 
-    @Update("UPDATE scores SET studentId = #{studentId}, cet4Score = #{cet4Score}, cet6Score = #{cet6Score}, examDate = #{examDate} WHERE id = #{id}")
-    void updateScore(Score score);
+    @Update("UPDATE scores SET cet4Score = #{cet4Score}, cet6Score = #{cet6Score} WHERE studentId = #{studentId} AND examDate = #{examDate}")
+    boolean updateScore(Score score);
+
+    @Select("SELECT * FROM scores WHERE studentId = #{studentId} AND examDate = #{examDate}")
+    Score findScoreByStudentIdAndExamDate(Integer studentId, Date examDate);
 
     @Delete("DELETE FROM scores WHERE id = #{id}")
-    void deleteScore(Integer id);
+    boolean deleteScore(Integer id);
 
     @Select("SELECT MAX(cet4Score) FROM scores WHERE studentId = #{studentId}")
     Integer findMaxCet4ScoreByStudentId(Integer studentId);

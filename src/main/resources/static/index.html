@@ -112,7 +112,7 @@
                     const user = response.data;
                     alert("Login success: "+ "用户" + user.username + "登录成功");
                     sessionStorage.setItem("userInfo", JSON.stringify(user));
-                    sessionStorage.setItem("userType", data.role);
+                    sessionStorage.setItem("userRole", data.role);
                     window.location.href = './pages/main.html';
                 } else {
                     console.error('Unexpected response status:', response.status);
