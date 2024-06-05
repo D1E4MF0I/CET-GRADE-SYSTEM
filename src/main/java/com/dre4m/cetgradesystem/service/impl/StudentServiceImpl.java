@@ -36,6 +36,13 @@ public class StudentServiceImpl implements StudentService {
         }
     }
 
+    @Override
+    public Student saveInfo(Student student) {
+        studentMapper.updateStudentById(student);
+        student = studentMapper.getStudentById(student.getId());
+        return student;
+    }
+
     public boolean isExistByUsername(String username) {
         Student studentByUsername = studentMapper.getStudentByUsername(username);
         if(studentByUsername == null){

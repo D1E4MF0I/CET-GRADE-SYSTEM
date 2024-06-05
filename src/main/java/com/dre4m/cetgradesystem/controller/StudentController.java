@@ -3,6 +3,7 @@ package com.dre4m.cetgradesystem.controller;
 import com.alibaba.fastjson2.JSON;
 import com.dre4m.cetgradesystem.domain.Admin;
 import com.dre4m.cetgradesystem.domain.Student;
+import com.dre4m.cetgradesystem.error.ErrorResponse;
 import com.dre4m.cetgradesystem.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,5 +36,14 @@ public class StudentController {
         }else{
             return ResponseEntity.ok(JSON.toJSONString(student));
         }
+    }
+
+    @PostMapping("/saveStudentInfo")
+    public ResponseEntity<?> saveStudentInfo(@RequestBody Student student){
+        student = studentService.saveInfo(student);
+        if(student == null){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(504, "保存失败", JSON.toJSONString(student)));
+        }
+        return ResponseEntity.ok(student);
     }
 }

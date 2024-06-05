@@ -23,8 +23,21 @@ public interface StudentMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void insertStudent(Student student);
 
-    @Update("UPDATE students SET name = #{name}, studentId = #{studentId}, major = #{major}, grade = #{grade}, username = #{username}, password = #{password} WHERE id = #{id}")
-    void updateStudent(Student student);
+    @Update({
+            "<script>",
+            "UPDATE students",
+            "<set>",
+            "<if test='name != null'>name = #{name},</if>",
+            "<if test='studentId != null'>studentId = #{studentId},</if>",
+            "<if test='major != null'>major = #{major},</if>",
+            "<if test='grade != null'>grade = #{grade},</if>",
+            "<if test='username != null'>username = #{username},</if>",
+            "<if test='password != null'>password = #{password},</if>",
+            "</set>",
+            "WHERE id = #{id}",
+            "</script>"
+    })
+    void updateStudentById(Student student);
 
     @Delete("DELETE FROM students WHERE id = #{id}")
     void deleteStudent(Integer id);

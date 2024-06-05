@@ -10,5 +10,6 @@ import java.util.List;
 public interface StudentService {
     Student register(Student student);
     Student login(String username, String password);
+    Student saveInfo(Student student);
 }
 

@@ -118,6 +118,10 @@
         <h2 style="margin:2vh 0vh;">学生信息管理</h2>
         <form id="studentForm">
             <div class="form-group">
+                <label for="id">学生ID</label>
+                <input type="text" id="id" name="id">
+            </div>
+            <div class="form-group">
                 <label for="name">姓名</label>
                 <input type="text" id="name" name="name">
             </div>
@@ -162,11 +166,13 @@
         // TODO:如果是学生身份
         if(userType === 'student'){
             const student = userInfo;
+            document.getElementById('id').value = student.id;
             document.getElementById('name').value = student.name;
             document.getElementById('studentId').value = student.studentId;
             document.getElementById('major').value = student.major;
             document.getElementById('grade').value = student.grade;
         }else{
+            // TODO:如果是管理员身份
             const admin = userInfo;
 
         }
@@ -176,7 +182,9 @@
     function enableEditing() {
         const inputs = document.querySelectorAll('#studentForm input');
         inputs.forEach(input => {
-            input.removeAttribute('disabled');
+            if (input.id !== 'id' && input.id !== 'grade') {
+                input.removeAttribute('disabled');
+            }
         });
     }
 
@@ -187,7 +195,57 @@
         inputs.forEach(input => {
             input.setAttribute('disabled', 'true');
         });
-        alert('数据已保存！');
+
+        const form = document.getElementById('studentForm');
+        const data = {
+            id: form.id.value,
+            name: form.name.value,
+            studentId: form.studentId.value,
+            major: form.major.value,
+            grade: form.grade.value
+        };
+
+        axios.post(`/student/saveStudentInfo`, data, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (response.status === 200) {
+                    const savedData = response.data;
+                    alert("保存成功: " + JSON.stringify(savedData));
+                    // 在这里处理后端返回的数据，比如显示成功信息或者更新页面显示
+                    sessionStorage.setItem('userInfo', savedData);
+                } else {
+                    console.error('Unexpected response status:', response.status);
+                    alert('保存失败: Unexpected response status');
+                }
+            })
+            .catch(error => {
+                if (error.response) {
+                    // 服务器返回了一个状态码，超出了2xx范围
+                    console.error('Error response data:', error.response.data);
+                    alert(`保存失败: ${error.response.data.message || 'Unknown error'}`);
+                    if (error.response.data.jsonData) {
+                        const student = JSON.parse(error.response.data.jsonData);
+                        // 将原始数据填回表单
+                        form.id.value = student.id;
+                        form.name.value = student.name;
+                        form.studentId.value = student.studentId;
+                        form.major.value = student.major;
+                        form.grade.value = student.grade;
+                    }
+                } else if (error.request) {
+                    // 请求已发出，但没有收到响应
+                    console.error('Error request:', error.request);
+                    alert('保存失败: No response received');
+                } else {
+                    // 设置请求时发生了一些问题
+                    console.error('Error message:', error.message);
+                    alert(`保存失败: ${error.message}`);
+                }
+                console.error('Error config:', error.config);
+            });
     }
 
     window.onload = () => {
