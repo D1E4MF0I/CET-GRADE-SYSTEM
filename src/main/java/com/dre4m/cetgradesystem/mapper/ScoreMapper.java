@@ -1,7 +1,6 @@
 package com.dre4m.cetgradesystem.mapper;
 
 import com.dre4m.cetgradesystem.domain.Score;
-import com.dre4m.cetgradesystem.domain.Student;
 import org.apache.ibatis.annotations.*;
 
 import java.sql.Date;

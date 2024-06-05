@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>四六级成绩管理系统</title>
     <link rel="stylesheet" href="../css/button.css" />
+    <link rel="stylesheet" href="../css/notice.css" />
     <style>
         *{
             margin: 0;
@@ -151,10 +151,9 @@
     <h3 style="text-align: center;">四六级成绩管理系统</h3>
     <a href="#content_box1" >主页</a>
     <a href="#content_box2" >个人信息管理</a>
-    <a href="#content_box3" >成绩管理</a>
-    <a href="#content_box4" >统计与分析</a>
+    <a href="#content_box3" >个人成绩管理</a>
     <a href="#content_box5" >通知公告</a>
-    <a href="#content_box5" >通知公告</a>
+    <a href="#content_box6" >个人成绩登记</a>
     <a href="#content_box7" >学生信息列表</a>
 </div>
 <div class="content" id="content">
@@ -165,7 +164,8 @@
             <a href="#content_box6" class="btn btn-green">登记成绩</a>
             <a href="#content_box3" class="btn btn-green">成绩管理</a>
             <a href="#content_box2" class="btn btn-green">修改信息</a>
-            <a href="#content_box5" class="btn btn-green">系统公告</a>
+            <a href="#content_box5" class="btn btn-green">通知公告</a>
+            <a href="#content_box7" class="btn btn-green">学生信息列表</a>
         </div>
     </div>
     <!--个人信息管理-->
@@ -215,8 +215,29 @@
             </tbody>
         </table>
     </div>
-<!--    <div class="content_box" id="content_box4">统计与分析</div>-->
-<!--    <div class="content_box" id="content_box5">通知公告</div>-->
+    <!--通知公告-->
+    <div class="content_box" id="content_box5">
+        <h2 style="margin:5vh 0vh;">通知公告</h2>
+        <div id="noticeBoard"></div>
+        <button class="btn btn-gray role-admin" onclick="showAddNoticeForm()">添加公告</button>
+
+        <!-- 添加公告的表单 -->
+        <div id="addNoticeForm" style="display:none;">
+            <h3>添加公告</h3>
+            <form id="noticeForm">
+                <div class="form-group">
+                    <label for="noticeTitle">标题</label>
+                    <input type="text" id="noticeTitle" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="noticeContent">内容</label>
+                    <textarea id="noticeContent" name="content" required></textarea>
+                </div>
+                <button type="button" class="btn btn-gray" onclick="addNotice()">保存</button>
+                <button type="button" class="btn btn-gray" onclick="hideAddNoticeForm()">取消</button>
+            </form>
+        </div>
+    </div>
     <!--个人成绩登记-->
     <div class="content_box content-box-template-center" id="content_box6">
         <h2 style="margin:5vh 0vh;">个人成绩登记</h2>
@@ -268,6 +289,8 @@
         </table>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="../js/notice.js"></script>
 <script>
     let userInfo = null;
     let userRole = null;
@@ -287,6 +310,8 @@
         // 成绩管理
         fetchScores();
         fetchStudents();
+        // 公告栏
+        fetchNotices();
 
         userRole = sessionStorage.getItem('userRole');
         userInfo = JSON.parse(sessionStorage.getItem('userInfo'));

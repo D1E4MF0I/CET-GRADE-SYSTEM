@@ -1,0 +1,34 @@
+#noticeBoard {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.notice {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+}
+
+.notice:last-child {
+    border-bottom: none;
+}
+
+.notice h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.notice p {
+    margin: 5px 0 0 0;
+    font-size: 14px;
+}
+
+.notice-actions {
+    margin-top: 10px;
+}
+
+.notice-actions button {
+    margin-right: 5px;
+}
