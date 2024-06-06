@@ -82,6 +82,9 @@ public class MapperTest {
 //        System.out.println(scoreMapper.getScoreById(3));
 //        System.out.println(scoreMapper.getScoreById(3));
 //        System.out.println(adminMapper.getAllAdmins());
-        System.out.println(adminMapper.getAdminByUsername("admin1"));
+//        System.out.println(adminMapper.getAdminByUsername("admin1"));
+//        Score score = scoreMapper.getAllScores().get(0);
+//        Score scoreByStudentIdAndExamDate = scoreMapper.findScoreByStudentIdAndExamDate(score.getStudentId(), score.getExamDate());
+//        System.out.println(scoreByStudentIdAndExamDate);
     }
 }
