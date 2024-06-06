@@ -18,11 +18,24 @@ function fetchNotices() {
                 `;
                 noticeBoard.appendChild(noticeElement);
             });
+
+            // Role check logic for dynamically added elements
+            const allRoleElements = document.querySelectorAll('[class*="role-"]');
+            allRoleElements.forEach(element => {
+                if (userRole === 'admin' && element.classList.contains('role-admin')) {
+                    element.style.display = element.getAttribute('data-display');
+                } else if (userRole === 'student' && element.classList.contains('role-student')) {
+                    element.style.display = element.getAttribute('data-display');
+                } else {
+                    element.style.display = 'none';
+                }
+            });
         })
         .catch(error => {
             console.error('Error fetching notices:', error);
         });
 }
+
 
 function showAddNoticeForm() {
     document.getElementById('addNoticeForm').style.display = 'block';

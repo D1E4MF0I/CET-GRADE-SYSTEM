@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>四六级成绩管理系统</title>
-    <link rel="stylesheet" href="../css/button.css" />
     <link rel="stylesheet" href="../css/notice.css" />
+    <link rel="stylesheet" href="../css/button.css" />
     <style>
         *{
             margin: 0;
@@ -150,22 +150,23 @@
 <div class="sidebar">
     <h3 style="text-align: center;">四六级成绩管理系统</h3>
     <a href="#content_box1" >主页</a>
-    <a href="#content_box2" >个人信息管理</a>
-    <a href="#content_box3" >个人成绩管理</a>
     <a href="#content_box5" >通知公告</a>
-    <a href="#content_box6" >个人成绩登记</a>
     <a href="#content_box7" >学生信息列表</a>
+    <a href="#content_box2" class="role-student">个人信息管理</a>
+    <a href="#content_box3" class="role-student">个人成绩管理</a>
+    <a href="#content_box6" class="role-student">个人成绩登记</a>
 </div>
 <div class="content" id="content">
     <!--欢迎使用四六级成绩管理系统-->
     <div class="content_box content-box-template-center" id="content_box1">
         <h1 style="margin-bottom: 10vh">欢迎使用四六级成绩管理系统</h1>
         <div class="btn-container">
-            <a href="#content_box6" class="btn btn-green">登记成绩</a>
-            <a href="#content_box3" class="btn btn-green">成绩管理</a>
-            <a href="#content_box2" class="btn btn-green">修改信息</a>
+            <a href="#content_box6" class="btn btn-green role-student">登记成绩</a>
+            <a href="#content_box3" class="btn btn-green role-student">成绩管理</a>
+            <a href="#content_box2" class="btn btn-green role-student">修改信息</a>
             <a href="#content_box5" class="btn btn-green">通知公告</a>
             <a href="#content_box7" class="btn btn-green">学生信息列表</a>
+            <a href="../index.html" class="btn btn-gray" id="logoutButton">退出</a>
         </div>
     </div>
     <!--个人信息管理-->
@@ -219,7 +220,7 @@
     <div class="content_box" id="content_box5">
         <h2 style="margin:5vh 0vh;">通知公告</h2>
         <div id="noticeBoard"></div>
-        <button class="btn btn-gray role-admin" onclick="showAddNoticeForm()">添加公告</button>
+        <button class="btn btn-gray role-admin" style="margin-top: 5vh" onclick="showAddNoticeForm()">添加公告</button>
 
         <!-- 添加公告的表单 -->
         <div id="addNoticeForm" style="display:none;">
@@ -280,7 +281,7 @@
                 <th>年级</th>
                 <th>CET4</th>
                 <th>CET6</th>
-                <th>操作</th>
+                <th class="role-admin">操作</th>
             </tr>
             </thead>
             <tbody style="text-align: center">
@@ -292,10 +293,12 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="../js/notice.js"></script>
 <script>
-    let userInfo = null;
-    let userRole = null;
+    let userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+    var userRole = sessionStorage.getItem('userRole');
 
     document.addEventListener('DOMContentLoaded', (event) => {
+        userRole = sessionStorage.getItem('userRole');
+        userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
         // 成绩登记
         generateExamDates();
         toggleScoreType();
@@ -312,9 +315,6 @@
         fetchStudents();
         // 公告栏
         fetchNotices();
-
-        userRole = sessionStorage.getItem('userRole');
-        userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
 
         const allRoleElements = document.querySelectorAll('[class*="role-"]');
 
@@ -343,6 +343,11 @@
                 element.style.display = element.getAttribute('data-display');
             });
         }
+        // 添加退出按钮的事件监听器
+        document.getElementById('logoutButton').addEventListener('click', () => {
+            sessionStorage.clear();
+            window.location.href = '../index.html';
+        });
     });
 
     function generateExamDates() {
@@ -580,10 +585,11 @@
 
                 const studentList = document.getElementById('studentList').getElementsByTagName('tbody')[0];
                 studentList.innerHTML = '';
-                students.forEach(studentWithScores => {
-                    const student = studentWithScores.student;
-                    const row = studentList.insertRow();
-                    row.innerHTML = `
+                if(userRole === 'admin'){
+                    students.forEach(studentWithScores => {
+                        const student = studentWithScores.student;
+                        const row = studentList.insertRow();
+                        row.innerHTML = `
                         <td>${student.id}</td>
                         <td>${student.name}</td>
                         <td>${student.studentId}</td>
@@ -596,7 +602,22 @@
                             <a href="#" class="btn btn-delete" onclick="deleteStudent(${student.id})">删除</a>
                         </td>
                     `;
-                });
+                    });
+                }else{
+                    students.forEach(studentWithScores => {
+                        const student = studentWithScores.student;
+                        const row = studentList.insertRow();
+                        row.innerHTML = `
+                        <td>${student.id}</td>
+                        <td>${student.name}</td>
+                        <td>${student.studentId}</td>
+                        <td>${student.major}</td>
+                        <td>${student.grade}</td>
+                        <td>${studentWithScores.maxCet4Score || 'N/A'}</td>
+                        <td>${studentWithScores.maxCet6Score || 'N/A'}</td>
+                    `;
+                    });
+                }
             })
             .catch(error => {
                 console.error('Error fetching students:', error);
@@ -631,7 +652,7 @@
             .then(response => {
                 if (response.status === 200) {
                     const savedData = response.data;
-                    alert("保存成功: " + JSON.stringify(savedData));
+                    alert("保存成功");
                     // 在这里处理后端返回的数据，比如显示成功信息或者更新页面显示
                     sessionStorage.setItem('userInfo', JSON.stringify(savedData));
                 } else {
