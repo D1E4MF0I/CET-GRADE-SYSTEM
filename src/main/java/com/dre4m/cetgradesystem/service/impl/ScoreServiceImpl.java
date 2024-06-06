@@ -30,7 +30,6 @@ public class ScoreServiceImpl implements ScoreService {
         Student student = studentMapper.getStudentById(scoreDto.getStudentId());
         if (student != null) {
             Date examDate = Date.valueOf(scoreDto.getExamDate());
-            System.out.println(examDate);
             Score existingScore = scoreMapper.findScoreByStudentIdAndExamDate(scoreDto.getStudentId(), examDate);
             if (existingScore != null) {
                 // 更新现有成绩
